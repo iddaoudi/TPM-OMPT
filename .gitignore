@@ -4,5 +4,5 @@ daemon/cmake_install.cmake
 daemon/Makefile
 ompt/libTPMompt.so
 .vscode/
-benchmarks_tpm/tpm_benchmark
+benchmarks/tpm_benchmark
 daemon/CMakeCache.txt

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-ALGORITHMS=(qr) # qr lu invert sylsvd)
+ALGORITHMS=(cholesky qr lu invert sylsvd)
 MATRIX=(8192 12288 16384 20480 24576 28672 32768 36864 40960)
 TILE=(512 1024 2048)
-TPM_THREADS=6
-ITER=({1..1})
+TPM_THREADS=24
+ITER=({1..3})
 NCASES=16
 PAPI_EVENTSET=({1..4})
 TEST=1
@@ -16,12 +16,13 @@ export TPM_TASK_TIME_TASK="gemm"
 if [ $TEST -eq 1 ]; then
     MATRIX=($1)
     TILE=($2)
+    ITER=(1)
     NCASES=16
 fi
 
-ROOT=/home/idriss/Work/Software
+ROOT=/home/cc
 TPM=${ROOT}/TPM-ompt
-TPM_BENCHMARKS=${TPM}/benchmarks_tpm
+TPM_BENCHMARKS=${TPM}/benchmarks
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/${ROOT}/OpenBLAS/build/lib
 export OPENBLAS_NUM_THREADS=1
@@ -29,12 +30,12 @@ export OPENBLAS_NUM_THREADS=1
 cd $TPM/ompt && make -s clean && make -s
 cd -
 if [ $TPM_POWER_SET -eq 1 ]; then
-    cd $TPM/power && rm -rf CMakeFiles/ cmake_install.cmake CMakeCache.txt Makefile TPMpower
+    cd $TPM/daemon && rm -rf CMakeFiles/ cmake_install.cmake CMakeCache.txt Makefile TPMdaemon
     cmake .
     make -s clean && make -s
     cd -
 fi
-cd $TPM/benchmarks_tpm && make clean -s && make -s
+cd $TPM/benchmarks && make clean -s && make -s
 cd -
 
 TPM_OMPT=${TPM}/ompt/libTPMompt.so
@@ -80,7 +81,7 @@ for algorithm in ${ALGORITHMS[*]}; do
                     for ((case = 1; case <= $NCASES; case++)); do
                         echo "*** TPM: Measuring energy/case"
 
-                        sudo -E ${TPM}/power/TPMpower $case $lowest_freq $default_freq &
+                        sudo -E ${TPM}/daemon/TPMdaemon $case $lowest_freq $default_freq &
                         sleep 0.1
                         echo "*** TPM: Power server launched"
 
@@ -96,5 +97,5 @@ for algorithm in ${ALGORITHMS[*]}; do
     done
 done
 
-ps -ef | grep TPMpower | grep -v grep | awk '{print $2}' | sudo xargs -r kill -9
+ps -ef | grep TPMdaemon | grep -v grep | awk '{print $2}' | sudo xargs -r kill -9
 echo "*** TPM: Submission finished"

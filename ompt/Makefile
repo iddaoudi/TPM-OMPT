@@ -1,7 +1,8 @@
 CC = gcc
-ROOT = /home/idriss/Work/Software/llvm-project/build-openmp
+ROOT = /home/cc
+OPENMP = ${ROOT}/llvm-project/build-openmp
 
-CFLAGS = -ggdb -shared -fPIC -fopenmp -I${ROOT}/include -Iinclude -Izmq
+CFLAGS = -O2 -shared -fPIC -fopenmp -I${OPENMP}/include -Iinclude -Izmq
 LFLAGS = -lzmq -lpapi
 
 LIBRARY = libTPMompt.so
