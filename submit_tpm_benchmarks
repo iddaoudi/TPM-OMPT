@@ -22,7 +22,7 @@ if [ $TEST -eq 1 ]; then
 fi
 
 ROOT=/home/cc
-TPM=${ROOT}/TPM-ompt
+TPM=${ROOT}/TPM-OMPT
 TPM_BENCHMARKS=${TPM}/benchmarks
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/${ROOT}/OpenBLAS/build/lib
