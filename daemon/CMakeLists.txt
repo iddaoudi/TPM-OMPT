@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(TPMPowerControl VERSION 1.0.0)
+project(TPMdaemonControl VERSION 1.0.0)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
@@ -15,7 +15,7 @@ set(ZMQ_LIBRARY -lzmq)
 set(CPUFREQ_LIBRARY -lcpufreq)
 
 # Create executable
-add_executable(TPMpower src/power.c)
+add_executable(TPMdaemon src/power.c)
 
 # Link libraries to your executable
-target_link_libraries(TPMpower ${ZMQ_LIBRARY} ${CPUFREQ_LIBRARY})
+target_link_libraries(TPMdaemon ${ZMQ_LIBRARY} ${CPUFREQ_LIBRARY})

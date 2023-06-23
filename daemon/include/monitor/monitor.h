@@ -13,7 +13,6 @@ void TPM_power_monitor(int combination_of_tasks,
     uint64_t *dram_energy_finish = (uint64_t *)calloc(active_packages, sizeof(uint64_t));
 
     double exec_time = 0.0;
-    const char **list_of_tasks;
 
     while (1)
     {
@@ -48,15 +47,15 @@ void TPM_power_monitor(int combination_of_tasks,
         }
         else
         {
-            list_of_tasks = TPM_power_control(combination_of_tasks, key,
-                                              (unsigned int)value, frequency_to_set,
-                                              default_frequency);
+            TPM_power_control(combination_of_tasks, key,
+                              (unsigned int)value, frequency_to_set,
+                              default_frequency);
         }
     }
     TPM_power_close_zmq_server();
     dump(active_packages, pkg_energy_start, pkg_energy_finish,
          dram_energy_start, dram_energy_finish,
-         exec_time, list_of_tasks);
+         exec_time);
 
     free(pkg_energy_start);
     free(pkg_energy_finish);

@@ -10,6 +10,7 @@
 
 #include "zmq.h"
 #include "cpufreq.h"
+#include "cvector.h"
 
 #include "utils.h"
 #include "common.h"

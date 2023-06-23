@@ -3,7 +3,7 @@ void dump(int active_packages,
           uint64_t *pkg_energy_finish,
           uint64_t *dram_energy_start,
           uint64_t *dram_energy_finish,
-          double exec_time, const char **list_of_tasks)
+          double exec_time)
 {
 
     char filename[TPM_FILENAME_SIZE];
@@ -40,10 +40,11 @@ void dump(int active_packages,
         fprintf(stderr, "More packages that what dump can handle\n");
         exit(EXIT_FAILURE);
     }
-    for (int i = 0; list_of_tasks[i] != NULL; i++)
+    int num_tasks = sizeof(tpm_tasks) / sizeof(tpm_tasks[0]);
+    for (int i = 0; i < num_tasks; i++)
     {
         fprintf(file, "%s,%d,%d,%d,%d,%s,%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%f\n",
-                ALGORITHM, MATRIX, TILE, NTHREADS, combination_of_tasks, list_of_tasks[i],
+                ALGORITHM, MATRIX, TILE, NTHREADS, combination_of_tasks, tpm_tasks[i],
                 pkg_energy[0], pkg_energy[1], dram_energy[0], dram_energy[1],
                 exec_time);
     }
