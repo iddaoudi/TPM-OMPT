@@ -1,0 +1,3 @@
+/home/idriss/Work/Software/TPM-ompt/power/CMakeFiles/TPMpower.dir
+/home/idriss/Work/Software/TPM-ompt/power/CMakeFiles/edit_cache.dir
+/home/idriss/Work/Software/TPM-ompt/power/CMakeFiles/rebuild_cache.dir

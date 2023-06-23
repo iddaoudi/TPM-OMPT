@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "typeinfo": "c",
+        "cstdlib": "c",
+        "uthash.h": "c",
+        "papi.h": "c"
+    }
+}
