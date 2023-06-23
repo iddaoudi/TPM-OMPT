@@ -3,3 +3,4 @@ daemon/TPMdaemon
 daemon/cmake_install.cmake
 daemon/Makefile
 ompt/libTPMompt.so
+.vscode/
