@@ -132,6 +132,7 @@ void ompt_finalize(ompt_data_t *tool_data)
             fprintf(stderr, "L3 cache size sysconf failed\n");
             exit(EXIT_FAILURE);
         }
+        dump(l3_cache_size);
     }
 
     Task *current = algorithm.head;

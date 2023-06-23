@@ -86,7 +86,7 @@ for algorithm in ${ALGORITHMS[*]}; do
                         sleep 0.1
                         echo "*** TPM: Power server launched"
 
-                        LD_PRELOAD=$OPENMP_PRELOAD OMP_TOOL_LIBRARIES=$TPM_OMPT numactl --physcpubind=0-$(expr $TPM_THREADS - 1) --membind=0 ${TPM_BENCHMARKS}/tpm_benchmark -a $algorithm -m $matrix -b $tile
+                        LD_PRELOAD=$OPENMP_PRELOAD OMP_TOOL_LIBRARIES=$TPM_OMPT numactl --physcpubind=0-$(expr $TPM_THREADS - 1) --membind=0,1 ${TPM_BENCHMARKS}/tpm_benchmark -a $algorithm -m $matrix -b $tile
                         echo "*** TPM: Measuring energy/case done" $algorithm "case" $case "with parameters" $TPM_THREADS $matrix $tile
                     done
                 else
