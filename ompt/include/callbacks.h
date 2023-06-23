@@ -78,7 +78,7 @@ static void get_ompt_callback_task_schedule(ompt_data_t *prior_task_data,
             int ret = PAPI_start(eventset);
             if (ret != PAPI_OK)
             {
-                fprintf(stderr, "PAPI_start error: %s\n", PAPI_strerror(ret));
+                fprintf(stderr, "PAPI_start %" PRIu64 " error: %s\n", next_task_data->value, PAPI_strerror(ret));
                 exit(EXIT_FAILURE);
             }
         }
