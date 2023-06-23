@@ -14,7 +14,7 @@ export TPM_TASK_TIME=0
 export TPM_TASK_TIME_TASK="gemm"
 
 if [ $TEST -eq 1 ]; then
-    ALGORITHM=(cholesky)
+    ALGORITHMS=(cholesky)
     MATRIX=($1)
     TILE=($2)
     ITER=(1)
