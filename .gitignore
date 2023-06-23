@@ -5,3 +5,4 @@ daemon/Makefile
 ompt/libTPMompt.so
 .vscode/
 benchmarks_tpm/tpm_benchmark
+daemon/CMakeCache.txt
