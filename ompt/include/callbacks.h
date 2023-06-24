@@ -49,6 +49,34 @@ static void get_ompt_callback_task_schedule(ompt_data_t *prior_task_data,
                                             ompt_data_t *next_task_data)
 {
     int flag = 0;
+    // Task finishes
+    if (prior_task_status == ompt_task_complete)
+    {
+        flag++;
+
+        pthread_mutex_lock(&mutex);
+        if (TPM_PAPI)
+        {
+            // Stop monitoring
+            int ret = PAPI_stop(eventset, values);
+            if (ret != PAPI_OK)
+            {
+                fprintf(stderr, "PAPI_stop error: %s\n", PAPI_strerror(ret));
+                exit(EXIT_FAILURE);
+            }
+            Task *task = TPM_find_task((uint64_t)prior_task_data->value);
+            if (task != NULL)
+            {
+                // collect PAPI counters and add them to the task's counters
+                for (int i = 0; i < NEVENTS; i++)
+                {
+                    task->counters[i] += values[i];
+                }
+                task->counters[NEVENTS]++;
+            }
+        }
+        pthread_mutex_unlock(&mutex);
+    }
     // Task starts running
     if (next_task_data->value) // Only capture explicit tasks
     {
@@ -80,35 +108,6 @@ static void get_ompt_callback_task_schedule(ompt_data_t *prior_task_data,
             {
                 fprintf(stderr, "PAPI_start %" PRIu64 " error: %s\n", next_task_data->value, PAPI_strerror(ret));
                 exit(EXIT_FAILURE);
-            }
-        }
-        pthread_mutex_unlock(&mutex);
-    }
-
-    // Task finishes
-    if (prior_task_status == ompt_task_complete)
-    {
-        flag++;
-
-        pthread_mutex_lock(&mutex);
-        if (TPM_PAPI)
-        {
-            // Stop monitoring
-            int ret = PAPI_stop(eventset, values);
-            if (ret != PAPI_OK)
-            {
-                fprintf(stderr, "PAPI_stop error: %s\n", PAPI_strerror(ret));
-                exit(EXIT_FAILURE);
-            }
-            Task *task = TPM_find_task((uint64_t)prior_task_data->value);
-            if (task != NULL)
-            {
-                // collect PAPI counters and add them to the task's counters
-                for (int i = 0; i < NEVENTS; i++)
-                {
-                    task->counters[i] += values[i];
-                }
-                task->counters[NEVENTS]++;
             }
         }
         pthread_mutex_unlock(&mutex);
