@@ -1,4 +1,3 @@
-
 void invert(double *A, int *ipiv, int matrix_size, int tile_size)
 {
     int lda = matrix_size;

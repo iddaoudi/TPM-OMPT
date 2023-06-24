@@ -4,7 +4,7 @@ int events[MAX_EVENTS];
 char *events_strings[MAX_EVENTS];
 int NEVENTS;
 
-int eventset;
+// int eventset;
 long long values[MAX_EVENTS];
 
 typedef struct
@@ -17,6 +17,7 @@ typedef struct Task
     uint64_t identifier;
     char name[20];
     long long counters[MAX_EVENTS];
+    int eventset;
     struct Task *next;
 } Task;
 

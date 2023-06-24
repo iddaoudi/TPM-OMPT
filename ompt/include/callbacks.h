@@ -41,6 +41,22 @@ static void get_ompt_callback_task_create(
             algorithm.tail->next = task;
             algorithm.tail = task;
         }
+        if (TPM_PAPI)
+        {
+            task->eventset = PAPI_NULL;
+            ret = PAPI_create_eventset(&eventset);
+            if (ret != PAPI_OK)
+            {
+                fprintf(stderr, "PAPI_create_eventset error: %s\n", PAPI_strerror(ret));
+                exit(EXIT_FAILURE);
+            }
+            ret = PAPI_add_events(eventset, events, NEVENTS);
+            if (ret != PAPI_OK)
+            {
+                fprintf(stderr, "PAPI_add_events error: %s\n", PAPI_strerror(ret));
+                exit(EXIT_FAILURE);
+            }
+        }
     }
 }
 
@@ -58,21 +74,27 @@ static void get_ompt_callback_task_schedule(ompt_data_t *prior_task_data,
         if (TPM_PAPI)
         {
             // Stop monitoring
-            int ret = PAPI_stop(eventset, values);
-            if (ret != PAPI_OK)
-            {
-                fprintf(stderr, "PAPI_stop error: %s\n", PAPI_strerror(ret));
-                exit(EXIT_FAILURE);
-            }
             Task *task = TPM_find_task((uint64_t)prior_task_data->value);
             if (task != NULL)
             {
+                int ret = PAPI_stop(task->eventset, values);
+                if (ret != PAPI_OK)
+                {
+                    fprintf(stderr, "PAPI_stop error: %s\n", PAPI_strerror(ret));
+                    exit(EXIT_FAILURE);
+                }
                 // collect PAPI counters and add them to the task's counters
                 for (int i = 0; i < NEVENTS; i++)
                 {
                     task->counters[i] += values[i];
                 }
                 task->counters[NEVENTS]++;
+            }
+            // Reset counters
+            if (PAPI_reset(task->eventset) != PAPI_OK)
+            {
+                printf("Couldn't reset PAPI counters\n");
+                exit(EXIT_FAILURE);
             }
         }
         pthread_mutex_unlock(&mutex);
@@ -84,10 +106,10 @@ static void get_ompt_callback_task_schedule(ompt_data_t *prior_task_data,
 
         // Start monitoring
         pthread_mutex_lock(&mutex);
+        Task *task = TPM_find_task((uint64_t)next_task_data->value);
         if (TPM_POWER)
         {
             unsigned int cpu = sched_getcpu();
-            Task *task = TPM_find_task((uint64_t)next_task_data->value);
             if (task != NULL)
             {
                 char *signal_control_task_on_cpu = TPM_str_and_int_to_str(task->name, cpu);
@@ -102,12 +124,15 @@ static void get_ompt_callback_task_schedule(ompt_data_t *prior_task_data,
         if (TPM_PAPI)
         {
             /* Start PAPI counters */
-            memset(values, 0, sizeof(values));
-            int ret = PAPI_start(eventset);
-            if (ret != PAPI_OK)
+            if (task != NULL)
             {
-                fprintf(stderr, "PAPI_start %" PRIu64 " error: %s\n", next_task_data->value, PAPI_strerror(ret));
-                exit(EXIT_FAILURE);
+                memset(values, 0, sizeof(values));
+                int ret = PAPI_start(task->eventset);
+                if (ret != PAPI_OK)
+                {
+                    fprintf(stderr, "PAPI_start %" PRIu64 " error: %s\n", next_task_data->value, PAPI_strerror(ret));
+                    exit(EXIT_FAILURE);
+                }
             }
         }
         pthread_mutex_unlock(&mutex);

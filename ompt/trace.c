@@ -50,13 +50,13 @@ int ompt_initialize(ompt_function_lookup_t lookup, int initial_device_num,
         }
 
         /* Add PAPI events */
-        eventset = PAPI_NULL;
-        ret = PAPI_create_eventset(&eventset);
-        if (ret != PAPI_OK)
-        {
-            fprintf(stderr, "PAPI_create_eventset error: %s\n", PAPI_strerror(ret));
-            exit(EXIT_FAILURE);
-        }
+        // eventset = PAPI_NULL;
+        // ret = PAPI_create_eventset(&eventset);
+        // if (ret != PAPI_OK)
+        // {
+        //     fprintf(stderr, "PAPI_create_eventset error: %s\n", PAPI_strerror(ret));
+        //     exit(EXIT_FAILURE);
+        // }
         TPM_PAPI_COUNTERS = atoi(getenv("TPM_PAPI_COUNTERS"));
         if (TPM_PAPI_COUNTERS == 1)
         {
@@ -92,12 +92,12 @@ int ompt_initialize(ompt_function_lookup_t lookup, int initial_device_num,
             events_strings[0] = "PAPI_VEC_DP";
             NEVENTS = 1;
         }
-        ret = PAPI_add_events(eventset, events, NEVENTS);
-        if (ret != PAPI_OK)
-        {
-            fprintf(stderr, "PAPI_add_events error: %s\n", PAPI_strerror(ret));
-            exit(EXIT_FAILURE);
-        }
+        // ret = PAPI_add_events(eventset, events, NEVENTS);
+        // if (ret != PAPI_OK)
+        // {
+        //     fprintf(stderr, "PAPI_add_events error: %s\n", PAPI_strerror(ret));
+        //     exit(EXIT_FAILURE);
+        // }
     }
     return 1;
 }
