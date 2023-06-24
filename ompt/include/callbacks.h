@@ -50,7 +50,7 @@ static void get_ompt_callback_task_create(
                 fprintf(stderr, "PAPI_create_eventset error: %s\n", PAPI_strerror(ret));
                 exit(EXIT_FAILURE);
             }
-            ret = PAPI_add_events(eventset, events, NEVENTS);
+            ret = PAPI_add_events(task->eventset, events, NEVENTS);
             if (ret != PAPI_OK)
             {
                 fprintf(stderr, "PAPI_add_events error: %s\n", PAPI_strerror(ret));
