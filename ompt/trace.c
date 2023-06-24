@@ -116,8 +116,6 @@ void ompt_finalize(ompt_data_t *tool_data)
     if (TPM_PAPI)
     {
 #pragma omp taskwait
-        PAPI_destroy_eventset(&eventset);
-        PAPI_shutdown();
 
         /* Get L3 cache size */
         long l3_cache_size;
@@ -139,9 +137,11 @@ void ompt_finalize(ompt_data_t *tool_data)
     while (current != NULL)
     {
         Task *next = current->next;
+        PAPI_destroy_eventset(&current->eventset);
         free(current);
         current = next;
     }
+    PAPI_shutdown();
 }
 
 ompt_start_tool_result_t *ompt_start_tool(unsigned int omp_version,

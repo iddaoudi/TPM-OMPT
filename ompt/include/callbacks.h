@@ -44,7 +44,7 @@ static void get_ompt_callback_task_create(
         if (TPM_PAPI)
         {
             task->eventset = PAPI_NULL;
-            ret = PAPI_create_eventset(&eventset);
+            int ret = PAPI_create_eventset(&task->eventset);
             if (ret != PAPI_OK)
             {
                 fprintf(stderr, "PAPI_create_eventset error: %s\n", PAPI_strerror(ret));
